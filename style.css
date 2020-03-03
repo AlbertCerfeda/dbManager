@@ -1,0 +1,11 @@
+*{
+    font-family: Arial;
+}
+#err{
+    background-color: rgb(156, 0, 0);
+    color: yellow;
+}
+#warn{
+    background-color: rgb(255, 153, 0);
+    color: black;
+}
