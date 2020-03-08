@@ -88,31 +88,6 @@
 			break;
         }
         
-        /*} else if ($_COOKIE['phase']=='dbView'){
-            $_SESSION['functions']['topStatusBar']($_SESSION['conn'],$_COOKIE['phase']);
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            echo "<script type='text/javascript'> 
-                    function logout(){
-                        document.cookie = 'phase=login ; expires = Thu, 01 Jan 1970 00:00:00 GMT';
-                        window.location.href= './index.php';
-                    }
-                </script>
-                <br><input type='button' onClick='logout()' value='Logout'>";
-        }*/
-        
     ?>
 </body>
 </html>
