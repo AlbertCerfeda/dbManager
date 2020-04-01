@@ -55,6 +55,7 @@
                                             $_SESSION['pwd']=$_GET['pwd'];
 
                                             include('./php/loginUtilities.php');
+                                            unset($_GET);
                                             setLogout(false);
 
                                         }

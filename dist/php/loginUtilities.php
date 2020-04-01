@@ -1,8 +1,11 @@
 <?php
 @session_start();
-    //$_SESSION['$mysqli']=getMysqli(null);
-    if (empty($_SESSION))
+function checkIfLoggedOut(){
+    if (!isset($_SESSION['user']) )
         header('Location: ../dist/login.php');
+}
+
+    checkIfLoggedOut();
     if (!isset($_SESSION['logout']))
         $_SESSION['logout'] =false;
 
@@ -35,19 +38,18 @@
         }
 
     }
-    function checkIfLoggedOut(){
 
-        if($_SESSION['logout']){
-            closeConnection();
-            header('Location: ../dist/login.php');
-        }
-    }
     function closeConnection(){
         global $mysqli;
         if( mysqli_close($mysqli)){
             unset($mysqli);
             setLogout(true);
-            unset($_SESSION);
+            $_SESSION=array();
+            if (ini_get("session.use_cookies")) {
+                $params = session_get_cookie_params();
+                setcookie('PHPSESSID', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"] );
+            }
+
             session_destroy();
             return true;
         }else
