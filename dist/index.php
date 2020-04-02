@@ -1,9 +1,6 @@
 <?php
 @session_start();
 include('./php/sendQuery.php');
-checkIfLoggedOut();
-print_r($_COOKIE);
-print_r($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="en">

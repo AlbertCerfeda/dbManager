@@ -17,42 +17,69 @@ if ($_GET['db'] && $_GET['table']) {
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>';
+                                ';
 
-    echo'<th>Name</th>'.
-                                '<th>Prova</th>'.
-                                '<th>Prova</th>'.
-                                '<th>Prova</th>'.
-                                '<th>Prova Prova</th>'.
-                                '<th>Prova</th>'.
-                            '</tr>'.
-                        '</thead>'.
-                        '<tfoot>'.
-                            '<tr>'.
-                                '<th>Name</th>'.
-                                '<th>Position</th>'.
-                                '<th>Office</th>'.
-                                '<th>Age</th>'.
-                                '<th>Start date</th>'.
-                                '<th>Salary</th>'.
-                            '</tr>'.
-                        '</tfoot>'.
-                        '<tbody>'.
-                            '<tr>'.
-                                '<td><input type="text" required readonly></td>'.
-                                '<td><input type="text" required readonly></td>'.
-                                '<td>EDIMBRA</td>'.
-                                '<td>61</td>'.
-                                '<td>2011/04/25</td>'.
-                                '<td>$320,800</td>'.
-                            '</tr>'.
-                        '</tbody>'.
-                    '</table>'.
+    sendQuery("USE ".$_GET['db']);
+    $result=  sendQuery("DESCRIBE ".$_GET['table']);
+
+    ////////////////////////////////////////
+    ////Printing Columns in Table
+    if(@mysqli_num_rows($result)!=0){
+        $fields=array();
+        while($row = mysqli_fetch_array($result, MYSQLI_NUM)){
+            $fields[sizeof($fields)]=$row[0];
+        }
+    }
+
+    echo'<thead><tr> ';
+    foreach ($fields as $value){
+        echo '<th>'.$value.'</th>';
+    }
+    echo '</tr> </thead>';
+
+    echo'<tfoot><tr> ';
+    foreach ($fields as $value){
+        echo '<th>'.$value.'</th>';
+    }
+    echo '</tr> </tfoot>';
+    ////////////////////////////////////////
+    //Printing all records inside the table
+    $result=  sendQuery("SELECT * FROM ".$_GET['table']);
+
+    $records=array();
+    if(@mysqli_num_rows($result)!=0){
+        while($row = mysqli_fetch_array($result, MYSQLI_NUM)){//Iterates every record
+            $nRecords=sizeof($records);
+            $records[$nRecords]=array();//Creates the array where all the records fields are stored
+            foreach ($row as $value){//Puts every field of the record inside the matrix
+                $records[$nRecords][sizeof($records[$nRecords])]=$value;
+            }
+        }
+    }
+    echo'<tbody>';
+    foreach ($records as $currRecord){
+        echo '<tr>';
+        foreach ($currRecord as $field){
+            echo '<td>'.$field.'</td>';
+        }
+        echo '</tr>';
+    }
+    echo '</tbody>';
+
+
+     echo           '</table>'.
                 '</div>'.
             '</div>'.
         '</div>'.
-    '</div>'.
-'';
+    '</div>
+    <script> 
+        $(document).ready(function() {
+            $("#dataTable").DataTable( {
+                "paging":   true,
+                "ordering": true,
+                "info":     false
+            });
+        } );
+    </script>';
 }
 ?>
