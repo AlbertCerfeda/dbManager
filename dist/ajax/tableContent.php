@@ -65,6 +65,28 @@ function isColumnFK($db,$table,$columnName){
     else
         return false;
 }
+function getInputfield($datatype,$value){
+    $maxlength='';
+    $type='';
+    $extra='';
+    $class='class="field"';
+    $defValue='value="'.$value.'" data-defvalue="'.$value.'"';
+    switch ($datatype){
+        /*case 'BOOL':
+            break;*/
+        /*case 'VARCHAR':
+            //$maxlength='maxlength="'.length.'"';
+            $type='type="text"';
+            break;*/
+        default:
+            $type='type="text"';
+            $extra='';
+            break;
+    }
+    return '<input '.$class.' style="width: 100%" '.$type.' '.$extra.' '.$maxlength.' '.$defValue.'>';
+}
+
+
 if ($_GET['db'] && $_GET['table']) {
     getMysqli(function () {
         echo
@@ -94,7 +116,7 @@ if ($_GET['db'] && $_GET['table']) {
         }
     }
 
-    echo'<thead><tr> ';
+    echo'<thead><tr>';
     foreach ($fields as $value){
         echo '<th>'.$value.'<p style="width: 100%; margin: 0;display: inline-block"> ';
         if (isColumnPK($_GET['db'],$_GET['table'],$value)){
@@ -108,7 +130,7 @@ if ($_GET['db'] && $_GET['table']) {
     }
     echo '</tr> </thead>';
 
-    echo'<tfoot><tr> ';
+    echo'<tfoot><tr>';
     foreach ($fields as $value){
         echo '<th>'.$value.'<p style="width: 100%; margin: 0;display: inline-block"> ';
         if (isColumnPK($_GET['db'],$_GET['table'],$value)){
@@ -139,7 +161,14 @@ if ($_GET['db'] && $_GET['table']) {
     foreach ($records as $currRecord){
         echo '<tr>';
         foreach ($currRecord as $field){
-            echo '<td>'.$field.'</td>';
+            echo '<td>'.getInputfield("", $field).'
+            <button class="btn btn-success btnMod" value="Update">
+                <i class="fas fa-check"></i>
+            </button> 
+            <button class="btn btn-danger btnMod" value="Cancel">
+                <i class="fas fa-times"></i>
+            </button>
+            </td>';
         }
         echo '</tr>';
     }
@@ -151,7 +180,38 @@ if ($_GET['db'] && $_GET['table']) {
              </div>
          </div>
      </div>
-    <script> 
+     <style>
+         .changed{
+              border-color: orange;
+              border-width: 3px;
+              border-style: solid;
+        }
+    </style>
+    <script>
+        $(".btnMod").hide();
+        function checkIfChanged(){
+            $field=$(this).parent().children(".field");
+            if ($($field).val() != $($field).data("defvalue")){
+                console.log($($field).data("defvalue")+" -> "+$($field).val());
+                $($field).addClass("changed");
+                $($field).parent().children(".btnMod").show();
+            }else{
+                $($field).removeClass("changed");
+                $($field).parent().children(".btnMod").hide();
+            }
+        }
+        $(".field").bind("input", checkIfChanged);
+        $(".field").change(checkIfChanged);
+        $(".btnMod").click(function(){
+            switch ($(this).val()) {
+              case "Update":
+                  
+                  break;
+              case "Cancel":
+                  $(this).parent().children(".field").val($(this).parent().children(".field").data("defvalue")).trigger("change");
+                  break;
+            }
+        });
         $(document).ready(function() {
             $("#dataTable").DataTable( {
                 "paging":   true,
